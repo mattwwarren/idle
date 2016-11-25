@@ -1,3 +1,5 @@
+var Q           = require( 'q' );
+
 function Commands( bot ) {
     this.commands       = {};
     this.bot            = bot;
@@ -12,6 +14,7 @@ Commands.prototype.addCommand = function( cmd, handler, description, acl )
 
 Commands.prototype.handle = function( jid, message )
 {
+    var deferred = Q.defer;
     var self    = this;
     var email   = this.getEmailFromJID( jid );
     var args    = this.getArgs( message );
@@ -22,8 +25,12 @@ Commands.prototype.handle = function( jid, message )
 
         if ( cmd == "help" )
         {
-            this.handleHelp( jid, message, args );
-            return true;
+            this.handleHelp( jid, message, args ).then( function ( help ) {
+                deferred.resolve( help );
+            }, function(error) {
+                console.log( error );
+                deferred.reject( error );
+            });
         }
 
         if ( this.commands[ cmd ] != null )
@@ -33,32 +40,38 @@ Commands.prototype.handle = function( jid, message )
 
                 if ( self.isAllowed( command, user ) )
                 {
-                    self.bot[ command.handler ]( jid, args, user, email );
+                    self.bot[ command.handler ]( jid, args, user, email ).then( function ( msg ) {
+                        deferred.resolve( msg );
+                    }, function( error ) {
+                        console.log( error );
+                        deferred.reject( error );
+                    } );
                 }
                 else
                 {
-                    self.bot.connection.sendMessage( jid, "You do not have access to that command." );
+                    deferred.resolve("You do not have access to that command." ) );
                 }
             }, function( err ) {
                 console.log( "DB ERR: " + err );
+                deferred.reject( "DB ERR: " + err );
             } );
 
-            return true;
         }
         else
         {
-            this.bot.connection.sendMessage( jid, "Unknown command: " + cmd + ".  Try typing help for more info." );
+            deferred.resolve( "Unknown command: " + cmd + ".  Try typing help for more info." );
         }
     }
 
-    return false;
+    return deferred.promise;
 }
 
 
 Commands.prototype.handleHelp       = function( jid, message, args )
 {
-    var self    = this;
-    var email   = this.getEmailFromJID( jid );
+    var deferred = Q.defer;
+    var self     = this;
+    var email    = this.getEmailFromJID( jid );
 
     this.bot.users.getUser( email ).then( function( user ) {
         if ( args.length == 1 )
@@ -75,7 +88,7 @@ Commands.prototype.handleHelp       = function( jid, message, args )
                 }
             }
 
-            self.bot.connection.sendMessage( jid, txt );
+            deferred.resolve( txt );
         }
         else
         {
@@ -86,16 +99,16 @@ Commands.prototype.handleHelp       = function( jid, message, args )
             {
                 if ( isAllowed( info, user ) )
                 {
-                    self.bot.connection.sendMessage( jid, info.cmd + " -- " + info.description );
+                    deferred.resolve(info.cmd + " -- " + info.description );
                 }
                 else
                 {
-                    self.bot.connection.sendMessage( jid, "You do not have access to that command." );
+                    deferred.resolve("You do not have access to that command." );
                 }
             }
             else
             {
-                self.bot.connection.sendMessage( jid, "No such command: " + args[ 0 ] );
+                deferred.resolve("No such command: " + args[ 0 ] );
             }
         }
     } );

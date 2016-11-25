@@ -1,9 +1,7 @@
 {
-    "db":           "/path/to/idle/idle.db",
-    "username":     "idlerpgbot@email.com",
-    "password":     "password",
+    "db":           "./idle.db",
 
-    "admin_password":   "admin_password",
+    "admin_password":   process.env.HUBOT_IRPG_ADMIN_PASSWORD,
 
     "rpg": {
         "rpbase":           600,
