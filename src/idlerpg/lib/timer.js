@@ -52,7 +52,7 @@ GameTimer.prototype.tick = function()
     for ( var email in users )
     {
         var user    = users[ email ];
-
+        
         if ( user.isOnline() )
         {
             if ( user.xpTick( this.ticrate ) )

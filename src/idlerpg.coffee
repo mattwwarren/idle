@@ -25,8 +25,14 @@ module.exports = (robot) ->
     user = msg.envelope.user.name.toLowerCase()
     command = msg.match[1]
     options = msg.match[2]
-    console.log command + options
     @idle.handleMessage(user, command + ' ' + options).then( (resp) =>
-      console.log 'RESP: ' + resp
       msg.send resp
     )
+
+  robot.enter (msg) =>
+    user = msg.envelope.user.name.toLowerCase()
+    @idle.userEnter(user)
+
+  robot.leave (msg) =>
+    user = msg.envelope.user.name.toLowerCase()
+    @idle.userExit(user)

@@ -28,7 +28,7 @@ function Idle(robot)
     this.commands   = new Commands( this );
     this.commandRegex = '';
     this.initCommands();
-    this.gameTimer  = new GameTimer( this );
+    this.online();
     this.robot      = robot;
 }
 
@@ -316,7 +316,6 @@ Idle.prototype.handleMessage = function( jid, message )
     console.log( jid + " :: " + message );
 
     this.commands.handle( jid, message ).then( function ( msg ){
-        console.log( msg );
         deferred.resolve( msg );
     }, function ( error ) {
         console.log( error );
@@ -326,5 +325,12 @@ Idle.prototype.handleMessage = function( jid, message )
     return deferred.promise;
 };
 
+Idle.prototype.userEnter = function( jid ){
+    this.users.updatePresence( jid, 'online' );
+};
+
+Idle.prototype.userExit = function( jid ){
+    this.users.updatePresence( jid, 'offline' );
+};
 
 module.exports = exports = Idle;
