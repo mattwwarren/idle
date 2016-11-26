@@ -28,6 +28,8 @@ function Idle(robot)
     this.commands   = new Commands( this );
     this.commandRegex = '';
     this.initCommands();
+    this.gameTimer  = new GameTimer( this );
+    this.robot      = robot;
 }
 
 

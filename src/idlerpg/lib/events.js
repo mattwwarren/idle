@@ -101,7 +101,7 @@ Events.prototype.hog = function()
 
 Events.prototype.levelUp    = function( user )
 {
-    this.bot.connection.sendMessage( user.getEmail(), "Level up!  You are now level " + ( user.getLevel() + 1 ) + ".  Next level in: " + nicetime( user.getNextTime() ) );
+    this.bot.robot.emit( 'idleNotification', user.getEmail(), "Level up!  You are now level " + ( user.getLevel() + 1 ) + ".  Next level in: " + nicetime( user.getNextTime() ) );
     this.findItem( user );
     this.challengeOpponent( user );
     user.save();
@@ -126,11 +126,11 @@ Events.prototype.findItem   = function( user )
 
     if ( user.exchangeItem( type, level ) )
     {
-        this.bot.connection.sendMessage( user.getEmail(), "You found a level " + level + " " + type + "! Your current " + type + " is only level " + oldItem.level + ", so it seems Luck is with you!" );
+        this.bot.robot.emit( 'idleNotification', user.getEmail(), "You found a level " + level + " " + type + "! Your current " + type + " is only level " + oldItem.level + ", so it seems Luck is with you!" );
     }
     else
     {
-        this.bot.connection.sendMessage( user.getEmail(), "You found a level " + level + " " + type + ". Your current " + type + " is level " + oldItem.level + ", so it seems Luck is against you. You toss the " + type + "." );
+        this.bot.robot.emit( user.getEmail(), "You found a level " + level + " " + type + ". Your current " + type + " is level " + oldItem.level + ", so it seems Luck is against you. You toss the " + type + "." );
     }
 }
 
