@@ -14,7 +14,7 @@ Commands.prototype.addCommand = function( cmd, handler, description, acl )
 
 Commands.prototype.handle = function( jid, message )
 {
-    var deferred = Q.defer;
+    var deferred = Q.defer();
     var self    = this;
     var email   = this.getEmailFromJID( jid );
     var args    = this.getArgs( message );
@@ -26,6 +26,7 @@ Commands.prototype.handle = function( jid, message )
         if ( cmd == "help" )
         {
             this.handleHelp( jid, message, args ).then( function ( help ) {
+                console.log( "HALP MEH: " + help );
                 deferred.resolve( help );
             }, function(error) {
                 console.log( error );
@@ -40,7 +41,9 @@ Commands.prototype.handle = function( jid, message )
 
                 if ( self.isAllowed( command, user ) )
                 {
+                    console.log(command);
                     self.bot[ command.handler ]( jid, args, user, email ).then( function ( msg ) {
+                        console.log( "HELLO FROM THE OTHER SIDE: " + msg );
                         deferred.resolve( msg );
                     }, function( error ) {
                         console.log( error );
@@ -49,7 +52,7 @@ Commands.prototype.handle = function( jid, message )
                 }
                 else
                 {
-                    deferred.resolve("You do not have access to that command." ) );
+                    deferred.resolve("You do not have access to that command." );
                 }
             }, function( err ) {
                 console.log( "DB ERR: " + err );
@@ -69,7 +72,7 @@ Commands.prototype.handle = function( jid, message )
 
 Commands.prototype.handleHelp       = function( jid, message, args )
 {
-    var deferred = Q.defer;
+    var deferred = Q.defer();
     var self     = this;
     var email    = this.getEmailFromJID( jid );
 

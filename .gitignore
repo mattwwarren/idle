@@ -1,0 +1,5 @@
+node_modules/*
+idle.db/*
+test-idle.db/*
+testconfig.json
+config.json
