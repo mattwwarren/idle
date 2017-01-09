@@ -5,7 +5,7 @@ var Users       = require( './lib/users' );
 var GameTimer   = require( './lib/timer' );
 var Events      = require( './lib/events' );
 var Monsters    = require( './lib/monsters' );
-var config      = require( './config.json' );
+var config      = require( './config' );
 var Q           = require( 'q' );
 
 var ACL_OWNER   = 500;
@@ -268,21 +268,21 @@ Idle.prototype.getInfo      = function( jid, user )
     var deferred = Q.defer();
     try {
         if ( user ) {
-            var info    = "-- " + user.getEmail() + " --\n";
-            info        += "Class: " + user.getClassName() + "\n";
-            info        += "Level: " + ( user.getLevel() + 1 ) + "\n";
+            var info    = user.getEmail();
+            info        += " Class: " + user.getClassName();
+            info        += " Level: " + ( user.getLevel() + 1 );
 
             var nextTime    = user.getNextTime();
-            info        += "Next level in: " + nicetime( nextTime ) + " (" + nextTime + " seconds)\n";
+            info        += " Next level in: " + nicetime( nextTime );
 
-            info        += "Location: [" + user.getX() + ", " + user.getY() + "]\n";
+            info        += " Location: [" + user.getX() + ", " + user.getY() + "]";
 
             var acl     = user.getACL();
             if ( acl ) {
-                info    += "ACL: " + acl + "\n";
+                info    += "ACL: " + acl;
             }
 
-            info        += "--------------------\nEquipment:\n";
+            info        += " Equipment:";
 
             var items       = this.config.rpg.items;
             var numItems    = items.length;
@@ -293,11 +293,11 @@ Idle.prototype.getInfo      = function( jid, user )
                 var item    = user.getItem( type );
                 var level   = item.level;
 
-                info        += type + ": " + level + "\n";
+                info        += type + ": " + level + " ";
                 score       += level;
             }
 
-            info        += "\nScore: " + score;
+            info        += "Score: " + score;
 
             deferred.resolve( info );
         }

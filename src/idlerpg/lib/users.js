@@ -225,6 +225,7 @@ User.prototype.register = function( email, className )
     this.model.nextTime     = this.calculateNextTime();
 
     this.sanitizeModel();
+    console.log("registering new model " + JSON.stringify(this.model));
 
     this.users.db.insert( this.model, function( err, result ) {
         if ( err )
@@ -237,6 +238,8 @@ User.prototype.register = function( email, className )
             deferred.resolve( self );
         }
     } );
+
+    this.save();
 
     return deferred.promise;
 }

@@ -25,6 +25,7 @@ module.exports = (robot) ->
     user = msg.envelope.user.name.toLowerCase()
     command = msg.match[1]
     options = msg.match[2]
+    console.log "HEARD #{command}"
     @idle.handleMessage(user, command + ' ' + options).then( (resp) =>
       msg.send resp
     )

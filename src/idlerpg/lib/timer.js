@@ -2,7 +2,7 @@ var nicetime        = require( 'nicetime' );
 var utils           = require( './utils' );
 
 
-function GameTimer( bot, ticrate, saverate )
+function GameTimer( bot )
 {
     this.bot            = bot;
     this.ticrate        = this.bot.config.rpg.ticrate;
